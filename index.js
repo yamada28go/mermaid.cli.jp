@@ -20,9 +20,11 @@ commander
   .option('-i, --input <input>', 'Input mermaid file. Required.')
   .option('-o, --output [output]', 'Output file. It should be either svg, png or pdf. Optional. Default: input + ".svg"')
   .option('-b, --backgroundColor [backgroundColor]', 'Background color. Example: transparent, red, \'#F0F0F0\'. Optional. Default: white')
+  .option('-c, --configFile [config]', 'JSON configuration file for mermaid. Optional')
+  .option('-C, --cssFile [cssFile]', 'CSS alternate file for mermaid. Optional')
   .parse(process.argv)
 
-let { theme, width, height, input, output, backgroundColor } = commander
+let { theme, width, height, input, output, backgroundColor, configFile, cssFile } = commander
 
 // check input file
 if (!input) {
@@ -44,6 +46,22 @@ if (!fs.existsSync(outputDir)) {
   error(`Output directory "${outputDir}/" doesn't exist`)
 }
 
+if (configFile) {
+  if (!fs.existsSync(configFile)) {
+    error(`Configuration file "${configFile}" doesn't exist`)
+  } else if (!/\.(?:json)$/.test(configFile)) {
+    error(`Config file must end with ".json"`)
+  }
+}
+
+if (cssFile) {
+  if (!fs.existsSync(cssFile)) {
+    error(`CSS file "${cssFile}" doesn't exist`)
+  } else if (!/\.(?:css)$/.test(cssFile)) {
+    error(`CSS file must end with ".css"`)
+  }
+}
+
 // normalize args
 width = parseInt(width)
 height = parseInt(height)
@@ -58,11 +76,42 @@ backgroundColor = backgroundColor || 'white'
   await page.evaluate(`document.body.style.background = '${backgroundColor}'`)
 
   const definition = fs.readFileSync(input, 'utf-8')
-  await page.$eval('#container', (container, definition, theme) => {
+
+  var myconfig, myCSS
+  
+  if (configFile) {
+    myconfig = JSON.parse(fs.readFileSync(configFile, 'utf-8'))
+  }
+
+  if (cssFile) {
+    myCSS = fs.readFileSync(cssFile, 'utf-8')
+  }
+
+  await page.$eval('#container', (container, definition, theme, myconfig, myCSS) => {
     container.innerHTML = definition
     window.mermaid_config = { theme }
+
+    if (myconfig) {
+    // See https://github.com/knsv/mermaid/blob/master/src/mermaidAPI.js
+      window.mermaid.initialize(myconfig)
+    }
+
+    if (myCSS) {
+      var head = window.document.head || window.document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+
+      style.type = 'text/css';
+      if (style.styleSheet) {
+        style.styleSheet.cssText = myCSS;
+      } else {
+        style.appendChild(document.createTextNode(myCSS));
+      }
+
+      head.appendChild(style);
+    }
+
     window.mermaid.init(undefined, container)
-  }, definition, theme)
+  }, definition, theme, myconfig, myCSS)
 
   if (output.endsWith('svg')) {
     const svg = await page.$eval('#container', container => container.innerHTML)
