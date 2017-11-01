@@ -2,6 +2,7 @@ FROM zenato/puppeteer
 
 WORKDIR /data
 
+ADD index.* ./
 ADD *.js ./
 ADD *.json ./
 RUN npm install --only=dev && \
