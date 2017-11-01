@@ -68,7 +68,12 @@ height = parseInt(height)
 backgroundColor = backgroundColor || 'white'
 
 ;(async () => {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
   const page = await browser.newPage()
   page.setViewport({ width, height })
   await page.goto(`file://${path.join(__dirname, 'index.html')}`)
