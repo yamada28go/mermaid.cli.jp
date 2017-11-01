@@ -1,4 +1,4 @@
-FROM node:latest
+FROM zenato/puppeteer
 
 WORKDIR /data
 
