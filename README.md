@@ -1,53 +1,46 @@
-# mermaid.cli
+# About
 
-Command-line interface for [mermaid](https://mermaidjs.github.io/).
+mermaidjsのコマンドラインインターフェースである、
+mermaid-cliの動作イメージを日本語対応したイメージです。
 
-This CLI tool takes a mermaid definition file as input and generates svg/png file as output.
+ベースとなったイメージは以下となります。
+ただし、日本語フォントがないため、日本語を含んだファイルを変換んしようとすると文字化けしていました。
+本イメージでは日本語フォントを含ませて日本語を含むファイルも変換できるようにしています。
+
+https://github.com/jnewland/mermaid.cli
 
 
 ## Installation
 
 ```
-yarn global add mermaid.cli
+docker pull yamada28go/mermaid.cli.jp
 ```
-
- Or
-
-```
-npm install -g mermaid.cli
-```
-
-Please install via `npm` instead of `yarn` if you encounter [this issue](https://github.com/yarnpkg/yarn/issues/2224).
 
 
 ## Examples
 
 ```
-mmdc -i input.mmd -o output.svg
+docker run --rm -v マウントパス:/local yamada28go/mermaid.cli.jp -i /local/対象ファイル.md -o /local/出力ファイル.png
 ```
 
 ```
-mmdc -i input.mmd -o output.png
+docker run --rm -v マウントパス:/local yamada28go/mermaid.cli.jp -i /local/対象ファイル.md -o /local/output.pdf
 ```
 
 ```
-mmdc -i input.mmd -o output.pdf
+docker run --rm -v マウントパス:/local yamada28go/mermaid.cli.jp -i /local/対象ファイル.md -o /local/output.svg -w 1024 -H 768
 ```
 
 ```
-mmdc -i input.mmd -o output.svg -w 1024 -H 768
+docker run --rm -v マウントパス:/local yamada28go/mermaid.cli.jp -i /local/対象ファイル.md -o /local/forest
 ```
 
 ```
-mmdc -i input.mmd -t forest
+docker run --rm -v マウントパス:/local yamada28go/mermaid.cli.jp -i /local/対象ファイル.md -o /local/output.png -b '#FFF000'
 ```
 
 ```
-mmdc -i input.mmd -o output.png -b '#FFF000'
-```
-
-```
-mmdc -i input.mmd -o output.png -b transparent
+docker run --rm -v マウントパス:/local yamada28go/mermaid.cli.jp -i /local/対象ファイル.md -o /local/output.png -b transparent
 ```
 
 
@@ -56,7 +49,7 @@ mmdc -i input.mmd -o output.png -b transparent
 Please run the following command to see the latest options:
 
 ```
-mmdc -h
+docker run --rm yamada28go/mermaid.cli.jp  -h
 ```
 
 The following is for your quick reference (may not be the latest version):
