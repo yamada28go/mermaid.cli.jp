@@ -46,11 +46,6 @@ RUN unzip NotoSansCJKjp-hinted.zip && \
 WORKDIR /
 RUN rm -rf /noto
 
-# Work dir
-RUN mkdir -p /app
-WORKDIR /app
-COPY . /app/
-
 #----
 # 以下イメージファイルをベースとする
 # https://github.com/jnewland/mermaid.cli
