@@ -7,7 +7,7 @@
 
 FROM ubuntu:18.04
 
-MAINTAINER morizyun <@zyunnosuke>
+MAINTAINER yamada28go <yamada28go@gmail.com>
 
 # For Japan
 RUN sed -i -E "s@http://(archive|security)\.ubuntu\.com/ubuntu/@http://ftp.jaist.ac.jp/pub/Linux/ubuntu/@g" /etc/apt/sources.list
